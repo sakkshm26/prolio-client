@@ -1,0 +1,38 @@
+.rgb {
+  background: linear-gradient(-45deg, #5d44cc, #5336d3, #0997ba, #168dab);
+  background-size: 300%;
+  text-transform: uppercase;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: animated_text 10s ease-in-out infinite;
+  -moz-animation: animated_text 10s ease-in-out infinite;
+  -webkit-animation: animated_text 10s ease-in-out infinite;
+}
+
+@keyframes animated_text {
+  0% {
+    background-position: 0px 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0px 50%;
+  }
+}
+
+.nav-light {
+  background-color: rgb(26 2 2);
+  animation: navbar-animation 2s ease-in-out;
+  z-index: 2;
+}
+
+.nav-dark {
+  background-color: transparent;
+  z-index: 2;
+}
+
+@keyframes navbar-animation {
+  /* from {background-color: red;}
+  to {background-color: yellow;} */
+}
