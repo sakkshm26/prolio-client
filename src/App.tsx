@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App" style={{ background: "linear-gradient(rgb(26 2 2), rgb(4 2 27))", minHeight: "100vh" }}>
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route
@@ -26,12 +26,12 @@ function App() {
             // </PrivateRoute>
           }
         />
-        <Route 
+        {/* <Route 
           path="/about"
           element={
             <About />
           }
-        />
+        /> */}
         {/* <Route path="/youtube" element={<YoutubeAuth />} />
         <Route path="/twitter" element={<TwitterAuth />} /> */}
         <Route path="/user-dashboard" element={<UserDashboard />} />

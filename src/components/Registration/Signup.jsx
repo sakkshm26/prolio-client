@@ -72,10 +72,10 @@ import Grid from "@mui/material/Grid";
 import LockOpen from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import prolio from "../../ui/logo2.png";
+import prolio from "../../ui/logo3.png";
 import { withStyles } from "@mui/styles";
 import { AuthContext } from "../../auth/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import API from "../../api";
 
 function Copyright(props) {
@@ -110,6 +110,7 @@ const theme = createTheme();
 
 export default function SignInSide() {
   const { user } = useContext(AuthContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [emailError, setEmailError] = useState(null)
   const [usernameError, setUsernameError] = useState(null)
@@ -242,6 +243,7 @@ export default function SignInSide() {
                 InputLabelProps={{
                   style: { color: "#fff" },
                 }}
+                defaultValue={searchParams.get("username")}
               />
               {usernameError && <Typography color="#b62828">{usernameError}</Typography>}
               <InputTextField

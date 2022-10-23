@@ -23,6 +23,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import "./About.css";
 import example from "../ui/example.png";
+import API from "../api";
 
 const CssTextField = withStyles({
   root: {
@@ -124,11 +125,7 @@ const About = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    API.get('http://localhost:4000/test').then(res => console.log(res.data)).catch(err => console.log(err))
   }, []);
 
   return (

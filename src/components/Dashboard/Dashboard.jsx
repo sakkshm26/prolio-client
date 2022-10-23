@@ -104,7 +104,7 @@ const Dashboard = () => {
           justifyContent: "space-around",
           alignItems: "center",
           flexDirection: { xs: "column-reverse", md: "row" },
-          margin: "40px 0",
+          margin: {xs: 0, md: "40px 0"},
         }}
       >
         <Box sx={{ width: { xs: "100%", sm: "50%" } }}>
@@ -147,10 +147,14 @@ const Dashboard = () => {
                   border: "1px solid #0dffda",
                   marginRight: { xs: 0, md: 8 },
                   width: {
-                    xs: userData.profiles[0].display_data.email_text.length * 5 + 50,
-                    md: userData.profiles[0].display_data.email_text.length * 7 + 50,
+                    xs:
+                      userData.profiles[0].display_data.email_text.length * 5 +
+                      50,
+                    md:
+                      userData.profiles[0].display_data.email_text.length * 7 +
+                      50,
                   },
-                  borderRadius: 2
+                  borderRadius: 2,
                 }}
                 onClick={() =>
                   (window.location = `mailto:${userData?.profiles[0]?.display_data?.email_id}`)
@@ -167,8 +171,9 @@ const Dashboard = () => {
                   fontWeight: "200",
                   fontSize: 18,
                   border: "1px solid #0dffda",
-                  width: userData.profiles[0].display_data.web_text.length * 7 + 50,
-                  borderRadius: 2
+                  width:
+                    userData.profiles[0].display_data.web_text.length * 7 + 50,
+                  borderRadius: 2,
                 }}
                 onClick={() =>
                   window.open(`${userData?.profiles[0]?.display_data?.web_url}`)
@@ -191,7 +196,7 @@ const Dashboard = () => {
           ></Box>
         ) : null}
       </Box>
-      <Box display="flex" flexDirection="column" alignItems="center">
+      {userData?.profiles[0]?.socials?.twitterProfile?.length && userData?.profiles[0]?.socials?.youtubeChannel?.length ? <Box display="flex" flexDirection="column" alignItems="center">
         <Box
           sx={{
             display: "flex",
@@ -259,12 +264,15 @@ const Dashboard = () => {
                 fontWeight="bold"
                 sx={{ fontSize: { xs: 20, md: 22 } }}
               >
-                {userData.profiles[0].socials.youtubeChannel[0].subscriber_count}
+                {
+                  userData.profiles[0].socials.youtubeChannel[0]
+                    .subscriber_count
+                }
               </Typography>
             </Box>
           ) : null}
         </Box>
-      </Box>
+      </Box> : null}
       {/* <Box>
         <Typography sx={{ fontSize: 25 }}>Total Reach</Typography>
         <Box display="flex" justifyContent="center">
@@ -288,6 +296,10 @@ const Dashboard = () => {
       {userData?.profiles[0]?.socials?.youtubeChannel?.length && (
         <YoutubeSection data={userData.profiles[0].socials.youtubeChannel} />
       )}
+      {!userData?.profiles[0]?.socials?.twitterProfile?.length &&
+      !userData?.profiles[0]?.socials?.youtubeChannel?.length ? (
+        <Typography sx={{ textAlign: "center", fontSize: 20, marginTop: {xs: 0, md: 3} }}>No social accounts connected </Typography>
+      ) : null}
       {/* <FacebookSection data={userData?.facebookProfile} /> */}
       {/* <InstagramSection /> */}
     </Box>

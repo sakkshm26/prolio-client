@@ -89,7 +89,7 @@ export default function Sidebar({
 
   const handleTwitterAuth = () => {
     let loginWindow = window.open(
-      `http://localhost:4000/api/authentication/twitter/start/${user?._id}`,
+      `http://prolioloadbalancer-742263347.us-east-1.elb.amazonaws.com/api/authentication/twitter/start/${user?._id}`,
       "_blank",
       "height=600, width=600"
     );
@@ -119,7 +119,7 @@ export default function Sidebar({
 
   const handleYoutubeAuth = () => {
     let loginWindow = window.open(
-      `https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?access_type=offline&approval_prompt=force&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauthentication%2Fyoutube%2Fredirect&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&client_id=954483491023-e2qdtp89n25r1904njiba9dbl9j75ggd.apps.googleusercontent.com&flowName=GeneralOAuthFlow&state=${user?._id}`,
+      `http://prolioloadbalancer-742263347.us-east-1.elb.amazonaws.com/api/authentication/youtube/start`,
       "_blank",
       "height=600, width=600"
     );
