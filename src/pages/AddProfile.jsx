@@ -11,29 +11,11 @@ import React, { useState } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import API from "../api";
 
-const CssTextField = withStyles({
+const InputTextField = withStyles({
   root: {
-    "& label.Mui-focused": {
-      color: "#e3e3e3",
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "#07655e",
-    },
     "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "#07655e",
-        borderWidth: 1,
-        borderRadius: "5px 0 0 1px",
-      },
-      "&:hover fieldset": {
-        borderColor: "#07655e",
-        borderWidth: 1,
-        borderRadius: "5px 0 0 1px",
-      },
       "&.Mui-focused fieldset": {
-        borderColor: "#07655e",
-        borderWidth: 1,
-        borderRadius: "5px 0 0 1px",
+        borderColor: "#0dffda",
       },
     },
   },
@@ -42,11 +24,9 @@ const CssTextField = withStyles({
 const AddProfile = () => {
   const [file, setFile] = useState();
   const [fileError, setFileError] = useState(null);
-  const [nameError, setNameError] = useState(null);
-  const [descriptionError, setDescriptionError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [data, setData] = useState({ display_name: "", description: "" });
+  const [data, setData] = useState({ username: "", bio: "" });
 
   const MAX_FILE_SIZE = 5120;
 
@@ -70,7 +50,7 @@ const AddProfile = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    await API.post("/images", formData, {
+    await API.post("/user/image", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => console.log(res.data))
@@ -84,26 +64,17 @@ const AddProfile = () => {
   };
 
   const handleSubmit = async () => {
-    if (data.display_name === "") {
-      setNameError("Display name is required");
-    } else if (data.description === "") {
-      setNameError(null);
-      setDescriptionError("Description is required");
-    } else {
-      setNameError(null);
-      setDescriptionError(null);
-      await API.post("/user/setup", data)
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => console.log(err));
-    }
+    await API.post("/user/addProfile", data)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
 
-    if (file) {
+    /* if (file) {
       postImage();
-    }
+    } */
 
-    window.location.reload()
+    window.location.reload();
   };
 
   return (
@@ -126,45 +97,45 @@ const AddProfile = () => {
             flexDirection="column"
             // justifyContent="center"
             alignItems="center"
-            width="100%"
+            width="40%"
             onChange={handleChange}
           >
-            <CssTextField
-              name="display_name"
-              placeholder="Display Name"
-              sx={{
-                input: { color: "#e3e3e3", fontSize: { xs: 13, sm: 16 } },
-                "& input": { padding: "10px 10px" },
-                width: "40%",
-                marginTop: 3,
-              }}
-              inputProps={{ maxLength: 20 }}
+            <InputTextField
+              margin="normal"
+              required
+              fullWidth
+              label="Username"
+              name="username"
               autoComplete="off"
-            />
-            {nameError ? (
-              <Typography marginTop={1} fontSize={13} color="#B00020">
-                {nameError}
-              </Typography>
-            ) : null}
-            <CssTextField
-              name="description"
-              placeholder="Description"
+              autoFocus
               sx={{
-                input: { color: "#e3e3e3", fontSize: { xs: 13, sm: 16 } },
-                "& input": { padding: "10px 10px" },
-                width: "40%",
-                marginTop: 5,
+                color: "white",
+                backgroundColor: "#1b1b1b",
+                input: { color: "#fff" },
               }}
-              inputProps={{ maxLength: 250 }}
-              autoComplete="off"
+              InputLabelProps={{
+                style: { color: "#fff" },
+              }}
             />
-            {descriptionError ? (
-              <Typography marginTop={1} fontSize={13} color="#B00020">
-                {descriptionError}
-              </Typography>
-            ) : null}
+            <InputTextField
+              margin="normal"
+              required
+              fullWidth
+              label="Bio"
+              name="bio"
+              autoComplete="off"
+              autoFocus
+              sx={{
+                color: "white",
+                backgroundColor: "#1b1b1b",
+                input: { color: "#fff" },
+              }}
+              InputLabelProps={{
+                style: { color: "#fff" },
+              }}
+            />
           </Box>
-          <Button
+          {/* <Button
             component="label"
             sx={{
               textTransform: "none",
@@ -189,7 +160,7 @@ const AddProfile = () => {
                 {fileError}
               </Typography>
             ) : null}
-          </Button>
+          </Button> */}
           <Button
             sx={{
               textTransform: "none",

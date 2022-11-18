@@ -1,65 +1,3 @@
-/* import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../../api";
-import { AuthContext } from "../../auth/useAuth";
-
-const Signup = () => {
-  const { user } = useContext(AuthContext);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate(`/${user?.result?.username}`);
-    }
-  }, []);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Submitting this", formData);
-
-    await API.post("/user/signup", formData)
-      .then((res) => {
-        console.log("Signup data ", res?.data);
-        localStorage.setItem("profile", JSON.stringify({ ...res?.data }));
-        navigate(`/${user?.result?.username}`);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit} onChange={handleChange}>
-        <input name="name" placeholder="Name" type="string" required={true} />
-        <input name="username" placeholder="Username" type="string" required={true} />
-        <input name="email" placeholder="Email" type="email" required={true} />
-        <input name="password" placeholder="Password" type="password" required={true} />
-        <input
-          name="confirm_password"
-          placeholder="Confirm password"
-          type="password"
-        />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  );
-};
-
-export default Signup; */
-
 import React, { useContext, useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -112,8 +50,7 @@ export default function SignInSide() {
   const { user } = useContext(AuthContext);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [emailError, setEmailError] = useState(null)
-  const [usernameError, setUsernameError] = useState(null)
+  const [emailError, setEmailError] = useState(null);
 
   const navigate = useNavigate();
 
@@ -125,7 +62,6 @@ export default function SignInSide() {
 
   const [formData, setFormData] = useState({
     name: "",
-    username: "",
     email: "",
     password: "",
     confirm_password: "",
@@ -142,18 +78,17 @@ export default function SignInSide() {
     await API.post("/user/signup", formData)
       .then((res) => {
         console.log("Signup data ", res?.data);
-        localStorage.setItem("profile", JSON.stringify({ ...res?.data }));
+        localStorage.setItem(
+          "profile",
+          JSON.stringify({ token: res.data.token, profile: res.data.user })
+        );
         navigate(`/user-dashboard`);
       })
       .catch((err) => {
         if (err?.response?.data?.code === 1) {
-          setEmailError(err.response.data.message)
-          setUsernameError(null)
-        } else if(err?.response?.data?.code === 2) {
-          setEmailError(null)
-          setUsernameError(err.response.data.message)
+          setEmailError(err.response.data.message);
         }
-        console.log(err)
+        console.log(err);
       });
   };
 
@@ -230,26 +165,6 @@ export default function SignInSide() {
                 margin="normal"
                 required
                 fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="off"
-                autoFocus
-                sx={{
-                  color: "white",
-                  backgroundColor: "#1b1b1b",
-                  input: { color: "#fff" },
-                }}
-                InputLabelProps={{
-                  style: { color: "#fff" },
-                }}
-                defaultValue={searchParams.get("username")}
-              />
-              {usernameError && <Typography color="#b62828">{usernameError}</Typography>}
-              <InputTextField
-                margin="normal"
-                required
-                fullWidth
                 id="email"
                 label="Email"
                 name="email"
@@ -265,7 +180,9 @@ export default function SignInSide() {
                   style: { color: "#fff" },
                 }}
               />
-              {emailError && <Typography color="#b62828">{emailError}</Typography>}
+              {emailError && (
+                <Typography color="#b62828">{emailError}</Typography>
+              )}
               <InputTextField
                 margin="normal"
                 required

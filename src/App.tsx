@@ -6,9 +6,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import TwitterAuth from "./components/TwitterAuth/TwitterAuth";
 import { Login, Signup } from "./components/Registration";
 import { Navbar } from "./components/Navbar";
-import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
 import { PrivateRoute } from "./route";
-import { About, Home, NotFound, UserDashboard } from "./pages";
+import { About, Default, Home, UserDashboard } from "./pages";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
           element={
             // <PrivateRoute>
               //  <Navbar /> 
-              <Dashboard />
+              <Profile />
             // </PrivateRoute>
           }
         />
@@ -35,7 +35,7 @@ function App() {
         {/* <Route path="/youtube" element={<YoutubeAuth />} />
         <Route path="/twitter" element={<TwitterAuth />} /> */}
         <Route path="/user-dashboard" element={<UserDashboard />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Default />} />
       </Routes>
     </div>
   );

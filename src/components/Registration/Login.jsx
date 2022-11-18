@@ -73,16 +73,13 @@ export default function Login() {
     await API.post("/user/signin", formData)
       .then((res) => {
         console.log("Login data ", res?.data);
-        localStorage.setItem("profile", JSON.stringify({ ...res?.data }));
+        localStorage.setItem("profile", JSON.stringify({ token: res.data.token, profile: res.data.user }));
         navigate(`/user-dashboard`);
       })
       .catch((err) => {
         if (err?.response?.data?.code === 1) {
           setEmailError(err.response.data.message)
           setPasswordError(null)
-        } else if(err?.response?.data?.code === 2) {
-          setEmailError(null)
-          setPasswordError(err.response.data.message)
         }
         console.log(err)
       });

@@ -17,24 +17,23 @@ const UserDashboard = () => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
-  const [userData, setUserData] = useState(null);
-  console.log(userData);
+  const [user_data, setuser_data] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      API.get(`/user/${user?.result?.username}`, {
+      API.get(`/user/get`, {
         params: {
           token: user?.token,
         },
       })
         .then((res) => {
-          setUserData(res?.data?.user);
+          setuser_data(res?.data?.user);
           setLoading(false);
         })
         .catch((err) => console.log(err));
-    } 
+    }
   }, []);
 
   return (
@@ -53,26 +52,29 @@ const UserDashboard = () => {
           >
             <Box component="img" src={logo} sx={{ height: 70, width: 80 }} />
           </Box>
-          {userData?.profiles?.length ? (
+          {user_data?.profiles?.length ? (
             <Box>
-              <Typography
-                textAlign="center"
-                marginTop={5}
-                fontSize={18}
-                onClick={() => navigate(`/${userData.username}`)}
-                sx={{
-                  textTransform: "none",
-                  textDecoration: "none",
-                  color: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                Go to {userData.name}'s profile
-                <NavigateNextIcon sx={{ fontSize: 40 }} />
-              </Typography>
+              {user_data.profiles.map((profile, index) => (
+                <Box key={index} onClick={() => navigate(`/${profile.username}`)}>
+                  <Typography
+                    textAlign="center"
+                    marginTop={5}
+                    fontSize={18}                    
+                    sx={{
+                      textTransform: "none",
+                      textDecoration: "none",
+                      color: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Go to {user_data.name}'s profile
+                    <NavigateNextIcon sx={{ fontSize: 40 }} />
+                  </Typography>
+                </Box>
+              ))}
             </Box>
           ) : (
             <AddProfile />

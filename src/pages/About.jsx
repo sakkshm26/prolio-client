@@ -124,9 +124,9 @@ const About = () => {
     }
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     API.get('http://localhost:4000/test').then(res => console.log(res.data)).catch(err => console.log(err))
-  }, []);
+  }, []); */
 
   return (
     <Box textAlign="center" paddingBottom={5}>

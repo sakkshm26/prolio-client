@@ -4,22 +4,22 @@ import { Card } from "../molecules";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
 const YoutubeSection = ({ data }) => {
-  let video_data = data[0].video_data.slice(0, 3);
+  let video_data = data.recent_videos.slice(0,3);
 
   let average_comments = 0,
     average_likes = 0,
     average_views = 0;
 
-  if (data[0].video_data.length) {
-    data[0].video_data.forEach((video, i) => {
-      average_likes += parseInt(video.like_count);
-      average_comments += parseInt(video.comment_count);
-      average_views += parseInt(video.view_count);
+  if (data.recent_videos.length) {
+    data.recent_videos.forEach((video, i) => {
+      average_likes += video.like_count;
+      average_comments += video.comment_count;
+      average_views += video.view_count;
     });
 
-    average_likes = parseInt(average_likes / data[0].video_data.length);
-    average_comments = parseInt(average_comments / data[0].video_data.length);
-    average_views = parseInt(average_views / data[0].video_data.length);
+    average_likes = parseInt(average_likes / data.recent_videos.length);
+    average_comments = parseInt(average_comments / data.recent_videos.length);
+    average_views = parseInt(average_views / data.recent_videos.length);
   }
 
   // console.log(average_likes, average_comments, average_views);
@@ -46,23 +46,23 @@ const YoutubeSection = ({ data }) => {
         <Card
           first="Subscribers"
           // Icon={<YouTubeIcon sx={{ color: "#FF0000" }} />}
-          second={data[0].subscriber_count}
+          second={data.subscriber_count}
           // third="101k subscribers"
         />
         <Card
           first="Videos"
           // Icon={<YouTubeIcon sx={{ color: "#FF0000" }} />}
-          second={data[0].video_count}
+          second={data.video_count}
           // third="101k subscribers"
         />
         <Card
           first="Views"
           // Icon={<YouTubeIcon sx={{ color: "#FF0000" }} />}
-          second={data[0].view_count}
+          second={data.view_count}
           // third="101k subscribers"
         />
       </Box>
-      {data[0].video_data.length && (
+      {data.recent_videos.length && (
         <Box marginTop={4}>
           <Typography
             sx={{
@@ -71,7 +71,7 @@ const YoutubeSection = ({ data }) => {
               textAlign: { xs: "center", md: "left" },
             }}
           >
-            Last {data[0].video_data.length} videos summary
+            Last {data.recent_videos.length} videos summary
           </Typography>
           <Box
             display="flex"
@@ -109,7 +109,7 @@ const YoutubeSection = ({ data }) => {
           >
             {video_data.map((video) => (
               <Box
-                key={video._id}
+                key={video.id}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -125,7 +125,7 @@ const YoutubeSection = ({ data }) => {
                   // width="420"
                   component="iframe"
                   sx={{ border: "none", height: "280px", width: {xs: "100%", lg: "80%"}, }}
-                  src={`https://www.youtube.com/embed/${video._id}`}
+                  src={`https://www.youtube.com/embed/${video.video_id}`}
                   // title="s"
                 ></Box>
               </Box>

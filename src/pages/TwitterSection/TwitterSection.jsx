@@ -5,22 +5,22 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { TwitterTweetEmbed } from "react-twitter-embed";
 
 const TwitterSection = ({ data }) => {
-  let tweet_data = data[0].tweet_data.slice(0, 3);
+  let tweet_data = data.recent_tweets.slice(0,3);
 
   let average_likes = 0,
     average_retweets = 0,
     average_replies = 0;
 
-  if (data[0].tweet_data.length) {
-    data[0].tweet_data.forEach((tweet, i) => {
-      average_likes += parseInt(tweet.public_metrics.like_count);
-      average_retweets += parseInt(tweet.public_metrics.retweet_count);
-      average_replies += parseInt(tweet.public_metrics.reply_count);
+  if (data.recent_tweets.length) {
+    data.recent_tweets.forEach((tweet, i) => {
+      average_likes += parseInt(tweet.like_count);
+      average_retweets += parseInt(tweet.retweet_count);
+      average_replies += parseInt(tweet.reply_count);
     });
 
-    average_likes = parseInt(average_likes / data[0].tweet_data.length);
-    average_retweets = parseInt(average_retweets / data[0].tweet_data.length);
-    average_replies = parseInt(average_replies / data[0].tweet_data.length);
+    average_likes = parseInt(average_likes / data.recent_tweets.length);
+    average_retweets = parseInt(average_retweets / data.recent_tweets.length);
+    average_replies = parseInt(average_replies / data.recent_tweets.length);
   }
 
   // console.log(average_likes,average_replies, average_retweets)
@@ -33,19 +33,19 @@ const TwitterSection = ({ data }) => {
           <Card
             first="Followers"
             Icon={<TwitterIcon sx={{ color: "#1DA1F2" }} />}
-            second={data[0].followers_count}
+            second={data.followers_count}
           />
           <Card
             first="Tweets"
             Icon={<TwitterIcon sx={{ color: "#1DA1F2" }} />}
-            second={data[0].tweet_count}
+            second={data.tweet_count}
           />
         </Box>
       </Box>
-      {data[0].tweet_data.length && (
+      {data.recent_tweets.length && (
         <Box marginTop={4}>
           <Typography sx={{ fontSize: {xs: 21, md: 25}, marginBottom: 2, textAlign: {xs: "center", md: "left"} }}>
-            Last {data[0].tweet_data.length} tweets summary
+            Last {data.recent_tweets.length} tweets summary
           </Typography>
           <Box display="flex" sx={{flexDirection: {xs: "column", md: 'row'}, justifyContent: "space-around", alignItems: {xs: "center"}}}>
             <Card first="Likes" second={average_likes} />
@@ -60,7 +60,7 @@ const TwitterSection = ({ data }) => {
           <Box display="flex" justifyContent="center" flexDirection={{xs: "column", md:"row"}}>
             {tweet_data.map((tweet) => (
               <Box
-                key={tweet._id}
+                key={tweet.id}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
@@ -73,10 +73,10 @@ const TwitterSection = ({ data }) => {
                 }}
               >
                 <TwitterTweetEmbed
-                  tweetId={tweet._id}
+                  tweetId={tweet.tweet_id}
                   onLoad={() => {
                     let item = document.querySelector(
-                      `[data-tweet-id="${tweet._id}"]`
+                      `[data-tweet-id="${tweet.tweet_id}"]`
                     );
 
                     item.setAttribute(

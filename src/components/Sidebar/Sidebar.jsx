@@ -8,10 +8,12 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
+  Alert,
   CircularProgress,
   FormControl,
   InputBase,
   InputLabel,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
@@ -38,18 +40,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Sidebar({
   drawerState,
   toggleDrawer,
-  user,
+  profile,
   changedAccountInfo,
   setChangedAccountInfo,
-  setUserData,
+  setProfile,
 }) {
   const [generalData, setGenrealData] = useState({
     display_name: "",
-    description: "",
+    bio: "",
     email_id: "",
     email_text: "",
     web_url: "",
-    web_text: "",
+    web_url_text: "",
   });
   const [generalError, setGeneralError] = useState(null);
   const [changedGeneralData, setChangedGeneralData] = useState(false);
@@ -59,6 +61,7 @@ export default function Sidebar({
 
   const [open, setOpen] = useState(false);
   const [dialogAccount, setDailogAccount] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const [file, setFile] = useState();
   const [fileError, setFileError] = useState(false);
@@ -72,39 +75,62 @@ export default function Sidebar({
 
   const handleClose = async (disconnect) => {
     if (disconnect) {
-      setChangedAccountInfo(true)
+      setChangedAccountInfo(true);
       console.log("Disconnecting");
-      await API.post(`http://localhost:4000/remove`, {
-        account: dialogAccount,
-        id: user?._id,
-      })
-        .then((res) => console.log(res.data))
-        .catch((err) =>
-          console.log("Something went wrong, please retry after some time.")
-        );
+      if (dialogAccount === "twitter") {
+        await API.post(`/social/disconnect`, {
+          social_id: profile.twitter_profiles[0].id,
+          account: dialogAccount,
+        })
+          .then((res) => console.log(res.data))
+          .catch((err) =>
+            console.log("Something went wrong, please retry after some time.")
+          );
+      } else if (dialogAccount === "youtube") {
+        await API.post(`/social/disconnect`, {
+          social_id: profile.youtube_profiles[0].id,
+          account: dialogAccount,
+        })
+          .then((res) => console.log(res.data))
+          .catch((err) =>
+            console.log("Something went wrong, please retry after some time.")
+          );
+      }
     }
     setOpen(false);
     setDailogAccount(null);
   };
 
-  const handleTwitterAuth = () => {
-    let loginWindow = window.open(
-      `http://prolioloadbalancer-742263347.us-east-1.elb.amazonaws.com/api/authentication/twitter/start/${user?._id}`,
-      "_blank",
-      "height=600, width=600"
-    );
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-    var timer = setInterval(function () {
-      if (loginWindow.closed) {
-        clearInterval(timer);
-        setChangedAccountInfo(true);
-      }
-    }, 1000);
+    setOpenSnackbar(false);
+  };
+
+  const handleTwitterAuth = () => {
+    if (profile.twitter_profiles.length) {
+      setOpenSnackbar(true)
+    } else {
+      let loginWindow = window.open(
+        `http://localhost:4000/social/twitter/start/${profile?.id}`,
+        "_blank",
+        "height=600, width=600"
+      );
+
+      var timer = setInterval(function () {
+        if (loginWindow.closed) {
+          clearInterval(timer);
+          setChangedAccountInfo(true);
+        }
+      }, 1000);
+    }
   };
 
   const handleFacebookAuth = () => {
     let loginWindow = window.open(
-      `https://www.facebook.com/v3.2/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauthentication%2Ffacebook%2Fredirect&scope=public_profile%2Cemail%2Cinstagram_basic%2Cinstagram_manage_insights%2Cpages_show_list%2Cpages_read_engagement%2Cread_insights%2Cpages_read_user_content&client_id=616175800209415&state=${user?._id}`,
+      `https://www.facebook.com/v3.2/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauthentication%2Ffacebook%2Fredirect&scope=public_profile%2Cemail%2Cinstagram_basic%2Cinstagram_manage_insights%2Cpages_show_list%2Cpages_read_engagement%2Cread_insights%2Cpages_read_user_content&client_id=616175800209415&state=${profile?.id}`,
       "_blank",
       "height=600, width=600"
     );
@@ -119,7 +145,7 @@ export default function Sidebar({
 
   const handleYoutubeAuth = () => {
     let loginWindow = window.open(
-      `http://prolioloadbalancer-742263347.us-east-1.elb.amazonaws.com/api/authentication/youtube/start`,
+      `http://localhost:4000/social/youtube/start?state=${profile?.id}`,
       "_blank",
       "height=600, width=600"
     );
@@ -154,7 +180,7 @@ export default function Sidebar({
 
   const validate = () => {
     if (!generalData.display_name.length) return "display_name";
-    else if (!generalData.description.length) return "description";
+    else if (!generalData.bio.length) return "bio";
     else if (
       (!generalData.email_id.length && generalData.email_text.length) ||
       (generalData.email_id.length && !validateEmail(generalData.email_id))
@@ -163,12 +189,12 @@ export default function Sidebar({
     else if (!generalData.email_text.length && generalData.email_id.length)
       return "email_text";
     else if (
-      (!generalData.web_url.length && generalData.web_text.length) ||
+      (!generalData.web_url.length && generalData.web_url_text.length) ||
       (generalData.web_url.length && !validateURL(generalData.web_url))
     )
       return "web_url";
-    else if (!generalData.web_text.length && generalData.web_url.length)
-      return "web_text";
+    else if (!generalData.web_url_text.length && generalData.web_url.length)
+      return "web_url_text";
     else return null;
   };
 
@@ -183,6 +209,7 @@ export default function Sidebar({
       } else {
         setFile(file);
         setFileError(null);
+        setChangedProfileImage(true)
       }
     }
   };
@@ -192,12 +219,12 @@ export default function Sidebar({
     const formData = new FormData();
     formData.append("image", file);
 
-    await API.post("/images", formData, {
+    await API.post(`/user/image/${profile.id}`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
       .then((res) => {
-        setChangedAccountInfo(true)
-        console.log(res.data)
+        setChangedAccountInfo(true);
+        console.log(res.data);
       })
       .catch((err) => console.log(err));
 
@@ -209,7 +236,7 @@ export default function Sidebar({
     setChangedGeneralData(true);
   };
 
-  const handleGeneralSubmit = async () => {
+  const handleSubmit = async () => {
     if (changedGeneralData) {
       let error = validate();
       console.log("Error", error);
@@ -218,16 +245,16 @@ export default function Sidebar({
       } else {
         setGeneralError(null);
         setLoading(true);
-        await API.post("/update", { ...generalData, id: user._id })
+        await API.post("/user/update", { ...generalData, id: profile.id })
           .then((res) => {
-            setUserData(res?.data?.user);
+            setProfile(res?.data?.profile);
           })
           .catch((err) => alert("Something went wrong"));
         setLoading(false);
       }
     }
     if (changedProfileImage) {
-      setChangedAccountInfo(true)
+      setChangedAccountInfo(true);
       if (file) {
         postImage();
       }
@@ -236,14 +263,14 @@ export default function Sidebar({
 
   useEffect(() => {
     setGenrealData({
-      display_name: user?.profiles[0]?.display_data.display_name,
-      description: user?.profiles[0]?.display_data.description,
-      email_id: user?.profiles[0]?.display_data.email_id || "",
-      email_text: user?.profiles[0]?.display_data.email_text || "",
-      web_url: user?.profiles[0]?.display_data.web_url || "",
-      web_text: user?.profiles[0]?.display_data.web_text || "",
+      display_name: profile?.display_name,
+      bio: profile?.bio,
+      email_id: profile?.email_id || "",
+      email_text: profile?.email_text || "",
+      web_url: profile?.web_url || "",
+      web_url_text: profile?.web_url_text || "",
     });
-  }, [user]);
+  }, [profile]);
 
   const list = () => (
     <Box
@@ -253,16 +280,29 @@ export default function Sidebar({
       //   onKeyDown={toggleDrawer}
       className="sidebar"
     >
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        sx={{ right: "20px !important", top: "10px !important", left: "auto !important", bottom: "auto !important" }}
+      >
+        <Alert severity="error">
+          An account is already connected!
+        </Alert>
+      </Snackbar>
       <Box
         display="flex"
         justifyContent="right"
         alignItems="center"
         marginTop={1}
       >
-        <CircularProgress size={18} sx={{ display: loading ? "block" : 'none' }} />
+        <CircularProgress
+          size={18}
+          sx={{ display: loading ? "block" : "none" }}
+        />
         <Button
           disabled={!changedProfileImage && !changedGeneralData}
-          onClick={handleGeneralSubmit}
+          onClick={handleSubmit}
           sx={{
             color: "#0dffda",
             // width: "100%",
@@ -286,7 +326,7 @@ export default function Sidebar({
         </AccordionSummary>
         <AccordionDetails>
           <form
-            // onSubmit={handleGeneralSubmit}
+            // onSubmit={handleSubmit}
             onChange={handleGeneralChange}
           >
             <FormControl variant="standard" sx={{ marginBottom: "10px" }}>
@@ -312,7 +352,7 @@ export default function Sidebar({
               />
             </FormControl>
             <FormControl variant="standard" sx={{ marginBottom: "10px" }}>
-              <Typography sx={{ fontSize: 12 }}>Description</Typography>
+              <Typography sx={{ fontSize: 12 }}>Bio</Typography>
               <InputBase
                 sx={{
                   marginTop: "8px",
@@ -323,13 +363,13 @@ export default function Sidebar({
                   color: "white",
                 }}
                 style={
-                  generalError === "description"
+                  generalError === "bio"
                     ? { border: "1px solid #B00020" }
                     : { border: "1px solid #ced4da" }
                 }
                 autoComplete="off"
-                name="description"
-                defaultValue={generalData.description}
+                name="bio"
+                defaultValue={generalData.bio}
                 inputProps={{ maxLength: 250 }}
               />
             </FormControl>
@@ -410,13 +450,13 @@ export default function Sidebar({
                   color: "white",
                 }}
                 style={
-                  generalError === "web_text"
+                  generalError === "web_url_text"
                     ? { border: "1px solid #B00020" }
                     : { border: "1px solid #ced4da" }
                 }
                 autoComplete="off"
-                name="web_text"
-                defaultValue={generalData.web_text}
+                name="web_url_text"
+                defaultValue={generalData.web_url_text}
                 inputProps={{ maxLength: 15 }}
               />
             </FormControl>
@@ -522,12 +562,13 @@ export default function Sidebar({
           <hr style={{ width: "60%", margin: "15px auto 15px auto" }} />
           <Typography sx={{ marginTop: 2 }}>Linked Accounts</Typography>
           <Box>
-            {!user?.profiles[0]?.socials?.twitterProfile?.length && !user?.profiles[0]?.socials?.youtubeChannel?.length && (
-              <Typography color="#737373" fontSize={14} marginTop={1}>
-                No accounts connected
-              </Typography>
-            )}
-            {user?.profiles[0]?.socials?.twitterProfile?.length ? (
+            {!profile?.twitter_profiles?.length &&
+              !profile?.youtube_profiles?.length && (
+                <Typography color="#737373" fontSize={14} marginTop={1}>
+                  No accounts connected
+                </Typography>
+              )}
+            {profile?.twitter_profiles?.length ? (
               <Box
                 display="flex"
                 flexDirection="row"
@@ -536,7 +577,9 @@ export default function Sidebar({
               >
                 <Box display="flex" alignItems="center">
                   <TwitterIcon sx={{ color: "#1DA1F2", marginRight: "10px" }} />
-                  <Typography>{user.profiles[0].socials.twitterProfile[0].username}</Typography>
+                  <Typography>
+                    {profile.twitter_profiles[0].username}
+                  </Typography>
                 </Box>
                 <DeleteIcon
                   sx={{
@@ -549,7 +592,7 @@ export default function Sidebar({
                 />
               </Box>
             ) : null}
-            {user?.profiles[0]?.socials?.youtubeChannel?.length ? (
+            {profile?.youtube_profiles?.length ? (
               <Box
                 display="flex"
                 flexDirection="row"
@@ -558,7 +601,9 @@ export default function Sidebar({
               >
                 <Box display="flex" alignItems="center">
                   <YouTubeIcon sx={{ color: "#FF0000", marginRight: "10px" }} />
-                  <Typography>{user.profiles[0].socials.youtubeChannel[0].name}</Typography>
+                  <Typography>
+                    {profile.youtube_profiles[0].name}
+                  </Typography>
                 </Box>
                 <DeleteIcon
                   sx={{
@@ -594,13 +639,22 @@ export default function Sidebar({
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogContent sx={{ backgroundColor: "#212121" }}>
-          <DialogContentText id="alert-dialog-slide-description" sx={{ color: "white", marginTop: 1 }}>
+          <DialogContentText
+            id="alert-dialog-slide-description"
+            sx={{ color: "white", marginTop: 1 }}
+          >
             Are you sure you want to disconnect the account?
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#212121", justifyContent: "center" }}>
-          <Button onClick={() => handleClose(false)} sx={{ color: "white" }}>Go back</Button>
-          <Button onClick={() => handleClose(true)} sx={{ color: "white" }}>Disconnect</Button>
+        <DialogActions
+          sx={{ backgroundColor: "#212121", justifyContent: "center" }}
+        >
+          <Button onClick={() => handleClose(false)} sx={{ color: "white" }}>
+            Go back
+          </Button>
+          <Button onClick={() => handleClose(true)} sx={{ color: "white" }}>
+            Disconnect
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
