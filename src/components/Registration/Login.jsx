@@ -7,7 +7,7 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LoginIcon from '@mui/icons-material/Login';
+import LoginIcon from "@mui/icons-material/Login";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import prolio from "../../ui/logo2.png";
@@ -38,7 +38,7 @@ const InputTextField = withStyles({
   root: {
     "& .MuiOutlinedInput-root": {
       "&.Mui-focused fieldset": {
-        borderColor: "#0dffda",
+        borderColor: "#0cc6aa",
       },
     },
   },
@@ -49,17 +49,17 @@ const theme = createTheme();
 export default function Login() {
   const { user } = useContext(AuthContext);
 
-  const [emailError, setEmailError] = useState(null)
-  const [passwordError, setPasswordError] = useState(null)
-  
+  const [emailError, setEmailError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
+
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (user) {
       navigate(`/user-dashboard`);
     }
   }, []);
-  
+
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleChange = (e) => {
@@ -73,22 +73,29 @@ export default function Login() {
     await API.post("/user/signin", formData)
       .then((res) => {
         console.log("Login data ", res?.data);
-        localStorage.setItem("profile", JSON.stringify({ token: res.data.token, profile: res.data.user }));
+        localStorage.setItem(
+          "profile",
+          JSON.stringify({ token: res.data.token, profile: res.data.user })
+        );
         navigate(`/user-dashboard`);
       })
       .catch((err) => {
         if (err?.response?.data?.code === 1) {
-          setEmailError(err.response.data.message)
-          setPasswordError(null)
+          setEmailError(err.response.data.message);
+          setPasswordError(null);
         }
-        console.log(err)
+        console.log(err);
       });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
-        <CssBaseline />
+      <Grid
+        container
+        component="main"
+        sx={{ height: "100vh", justifyContent: "center" }}
+      >
+        {/* <CssBaseline />
         <Grid
           item
           xs={false}
@@ -104,7 +111,7 @@ export default function Login() {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        />
+        /> */}
         <Grid
           item
           xs={12}
@@ -113,11 +120,11 @@ export default function Login() {
           component={Paper}
           elevation={6}
           square
-          sx={{ backgroundColor: "black" }}
+          sx={{ background: "linear-gradient(rgb(26 2 2), rgb(4 2 27))" }}
         >
           <Box
             sx={{
-              my: {xs: 3, md: "25%"},
+              my: { xs: 3, md: "25%" },
               mx: 4,
               display: "flex",
               flexDirection: "column",
@@ -155,7 +162,9 @@ export default function Login() {
                   style: { color: "#fff" },
                 }}
               />
-              {emailError && <Typography color="#b62828">{emailError}</Typography>}
+              {emailError && (
+                <Typography color="#b62828">{emailError}</Typography>
+              )}
               <InputTextField
                 margin="normal"
                 required
@@ -174,12 +183,14 @@ export default function Login() {
                   style: { color: "#fff" },
                 }}
               />
-              {passwordError && <Typography color="#b62828">{passwordError}</Typography>}
+              {passwordError && (
+                <Typography color="#b62828">{passwordError}</Typography>
+              )}
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2, backgroundColor: "#072c50" }}
+                sx={{ mt: 3, mb: 2, fontWeight: "600", backgroundColor: "#081430", '&:hover': {backgroundColor: "#081430"} }}
               >
                 Login
               </Button>
@@ -190,7 +201,7 @@ export default function Login() {
                     variant="body2"
                     style={{ textDecoration: "none" }}
                   >
-                    <Typography sx={{ color: "#424242" }}>
+                    <Typography sx={{ color: "#686868" }}>
                       Don't have an account? Sign Up
                     </Typography>
                   </Link>

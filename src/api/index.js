@@ -3,8 +3,8 @@ import JWT from 'expo-jwt';
 
 const token = JWT.encode({ foo: 'bar' }, process.env.REACT_APP_JWT_SECRET_KEY);
 
-// const API = axios.create({ baseURL: 'http://prolioloadbalancer-742263347.us-east-1.elb.amazonaws.com' });
-const API = axios.create({ baseURL: 'http://localhost:4000' });
+const API = axios.create({ baseURL: 'https://prolio-server.onrender.com/' });
+// const API = axios.create({ baseURL: 'http://localhost:4000' });
 
 API.interceptors.request.use(req => {
     if (localStorage.getItem('profile')) {

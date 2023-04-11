@@ -10,12 +10,13 @@ import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import API from "../api";
+import { Loading } from "../components/Loading";
 
 const InputTextField = withStyles({
   root: {
     "& .MuiOutlinedInput-root": {
       "&.Mui-focused fieldset": {
-        borderColor: "#0dffda",
+        borderColor: "#0cc6aa",
       },
     },
   },
@@ -80,7 +81,7 @@ const AddProfile = () => {
   return (
     <Box>
       {loading ? (
-        <Box className="loading"></Box>
+        <Loading />
       ) : (
         <Box
           display="flex"
@@ -97,7 +98,7 @@ const AddProfile = () => {
             flexDirection="column"
             // justifyContent="center"
             alignItems="center"
-            width="40%"
+            width={{xs: "90%", md: "40%"}}
             onChange={handleChange}
           >
             <InputTextField
@@ -164,10 +165,10 @@ const AddProfile = () => {
           <Button
             sx={{
               textTransform: "none",
-              color: "#05d0b1",
-              border: "1px solid #05d0b1",
+              color: "white",
+              backgroundColor: "#081430", '&:hover': {backgroundColor: "#081430"},
               marginTop: 2,
-              width: "40%",
+              width: {xs: "90%", md: "40%"}
             }}
             onClick={handleSubmit}
           >

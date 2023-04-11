@@ -12,34 +12,38 @@ import { AuthContext } from "../auth/useAuth";
 import logo from "../ui/logo.png";
 import AddProfile from "./AddProfile";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { Loading } from "../components/Loading";
 
 const UserDashboard = () => {
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
-  const [user_data, setuser_data] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      API.get(`/user/get`, {
-        params: {
-          token: user?.token,
-        },
-      })
-        .then((res) => {
-          setuser_data(res?.data?.user);
-          setLoading(false);
+    setTimeout(() => {
+      let data = JSON.parse(localStorage.getItem("profile"))
+      if (data) {
+        API.get(`/user/get`, {
+          params: {
+            token: data.token,
+          },
         })
-        .catch((err) => console.log(err));
-    }
+          .then((res) => {
+            setUserData(res?.data?.user);
+            setLoading(false);
+          })
+          .catch((err) => console.log(err));
+      }
+    }, 2000);
   }, []);
 
   return (
     <Box>
       {loading ? (
-        <Box className="loading"></Box>
+        <Loading />
       ) : (
         <Box>
           <Box
@@ -52,14 +56,18 @@ const UserDashboard = () => {
           >
             <Box component="img" src={logo} sx={{ height: 70, width: 80 }} />
           </Box>
-          {user_data?.profiles?.length ? (
+          {userData?.profiles?.length ? (
             <Box>
-              {user_data.profiles.map((profile, index) => (
-                <Box key={index} onClick={() => navigate(`/${profile.username}`)}>
+              {userData.profiles.map((profile, index) => (
+                <Box
+                  key={index}
+                  onClick={() => navigate(`/${profile.username}`)}
+                  sx={{ "&:hover": { cursor: "pointer" } }}
+                >
                   <Typography
                     textAlign="center"
                     marginTop={5}
-                    fontSize={18}                    
+                    fontSize={18}
                     sx={{
                       textTransform: "none",
                       textDecoration: "none",
@@ -70,7 +78,7 @@ const UserDashboard = () => {
                       alignItems: "center",
                     }}
                   >
-                    Go to {user_data.name}'s profile
+                    Go to {userData.name}'s profile
                     <NavigateNextIcon sx={{ fontSize: 40 }} />
                   </Typography>
                 </Box>

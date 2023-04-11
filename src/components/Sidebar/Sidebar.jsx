@@ -110,11 +110,11 @@ export default function Sidebar({
   };
 
   const handleTwitterAuth = () => {
-    if (profile.twitter_profiles.length) {
-      setOpenSnackbar(true)
+    if (profile.twitter_profiles?.length) {
+      setOpenSnackbar(true);
     } else {
       let loginWindow = window.open(
-        `http://localhost:4000/social/twitter/start/${profile?.id}`,
+        `https://api.prolio.xyz/social/twitter/start/${profile?.id}`,
         "_blank",
         "height=600, width=600"
       );
@@ -128,7 +128,7 @@ export default function Sidebar({
     }
   };
 
-  const handleFacebookAuth = () => {
+  /* const handleFacebookAuth = () => {
     let loginWindow = window.open(
       `https://www.facebook.com/v3.2/dialog/oauth?response_type=code&redirect_uri=https%3A%2F%2Flocalhost%3A4000%2Fapi%2Fauthentication%2Ffacebook%2Fredirect&scope=public_profile%2Cemail%2Cinstagram_basic%2Cinstagram_manage_insights%2Cpages_show_list%2Cpages_read_engagement%2Cread_insights%2Cpages_read_user_content&client_id=616175800209415&state=${profile?.id}`,
       "_blank",
@@ -141,21 +141,25 @@ export default function Sidebar({
         setChangedAccountInfo(true);
       }
     }, 1000);
-  };
+  }; */
 
   const handleYoutubeAuth = () => {
-    let loginWindow = window.open(
-      `http://localhost:4000/social/youtube/start?state=${profile?.id}`,
-      "_blank",
-      "height=600, width=600"
-    );
+    if (profile.youtube_profiles?.length) {
+      setOpenSnackbar(true);
+    } else {
+      let loginWindow = window.open(
+        `https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?access_type=offline&approval_prompt=force&response_type=code&redirect_uri=https%3A%2F%2Fapi.prolio.xyz%2Fsocial%2Fyoutube%2Fredirect&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&client_id=954483491023-e2qdtp89n25r1904njiba9dbl9j75ggd.apps.googleusercontent.com&service=lso&o2v=1&flowName=GeneralOAuthFlow&state=${profile?.id}`,
+        "_blank",
+        "height=600, width=600"
+      );
 
-    var timer = setInterval(function () {
-      if (loginWindow.closed) {
-        clearInterval(timer);
-        setChangedAccountInfo(true);
-      }
-    }, 1000);
+      var timer = setInterval(function () {
+        if (loginWindow.closed) {
+          clearInterval(timer);
+          setChangedAccountInfo(true);
+        }
+      }, 1000);
+    }
   };
 
   const validateEmail = (email) => {
@@ -179,21 +183,21 @@ export default function Sidebar({
   };
 
   const validate = () => {
-    if (!generalData.display_name.length) return "display_name";
-    else if (!generalData.bio.length) return "bio";
-    else if (
-      (!generalData.email_id.length && generalData.email_text.length) ||
-      (generalData.email_id.length && !validateEmail(generalData.email_id))
+    // if (!generalData.display_name.length) return "display_name";
+    // else if (!generalData.bio.length) return "bio";
+    if (
+      (!generalData.email_id?.length && generalData.email_text?.length) ||
+      (generalData.email_id?.length && !validateEmail(generalData.email_id))
     )
       return "email_id";
     else if (!generalData.email_text.length && generalData.email_id.length)
       return "email_text";
     else if (
-      (!generalData.web_url.length && generalData.web_url_text.length) ||
-      (generalData.web_url.length && !validateURL(generalData.web_url))
+      (!generalData.web_url?.length && generalData.web_url_text?.length) ||
+      (generalData.web_url?.length && !validateURL(generalData.web_url))
     )
       return "web_url";
-    else if (!generalData.web_url_text.length && generalData.web_url.length)
+    else if (!generalData.web_url_text?.length && generalData.web_url?.length)
       return "web_url_text";
     else return null;
   };
@@ -209,7 +213,7 @@ export default function Sidebar({
       } else {
         setFile(file);
         setFileError(null);
-        setChangedProfileImage(true)
+        setChangedProfileImage(true);
       }
     }
   };
@@ -284,11 +288,14 @@ export default function Sidebar({
         open={openSnackbar}
         autoHideDuration={4000}
         onClose={handleCloseSnackbar}
-        sx={{ right: "20px !important", top: "10px !important", left: "auto !important", bottom: "auto !important" }}
+        sx={{
+          right: "20px !important",
+          top: "10px !important",
+          left: "auto !important",
+          bottom: "auto !important",
+        }}
       >
-        <Alert severity="error">
-          An account is already connected!
-        </Alert>
+        <Alert severity="error">An account is already connected!</Alert>
       </Snackbar>
       <Box
         display="flex"
@@ -491,7 +498,7 @@ export default function Sidebar({
               <input onChange={fileSelected} type="file" hidden />
             </Button>
             <Typography color="white">
-              {file?.name.length > 15
+              {file?.name?.length > 15
                 ? `${file?.name.slice(0, 12)}...`
                 : file?.name}
             </Typography>
@@ -601,9 +608,7 @@ export default function Sidebar({
               >
                 <Box display="flex" alignItems="center">
                   <YouTubeIcon sx={{ color: "#FF0000", marginRight: "10px" }} />
-                  <Typography>
-                    {profile.youtube_profiles[0].name}
-                  </Typography>
+                  <Typography>{profile.youtube_profiles[0].name}</Typography>
                 </Box>
                 <DeleteIcon
                   sx={{

@@ -38,7 +38,7 @@ const InputTextField = withStyles({
   root: {
     "& .MuiOutlinedInput-root": {
       "&.Mui-focused fieldset": {
-        borderColor: "#0dffda",
+        borderColor: "#0cc6aa",
       },
     },
   },
@@ -46,9 +46,10 @@ const InputTextField = withStyles({
 
 const theme = createTheme();
 
-export default function SignInSide() {
+export default function SignUp() {
   const { user } = useContext(AuthContext);
   const [searchParams, setSearchParams] = useSearchParams();
+  // console.log(searchParams.get("a"))
 
   const [emailError, setEmailError] = useState(null);
 
@@ -94,9 +95,13 @@ export default function SignInSide() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
-        <CssBaseline />
-        <Grid
+      <Grid
+        container
+        component="main"
+        sx={{ height: "100vh", justifyContent: "center" }}
+      >
+        {/* <CssBaseline /> */}
+        {/* <Grid
           item
           xs={false}
           sm={4}
@@ -111,7 +116,7 @@ export default function SignInSide() {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        />
+        /> */}
         <Grid
           item
           xs={12}
@@ -120,7 +125,7 @@ export default function SignInSide() {
           component={Paper}
           elevation={6}
           square
-          sx={{ backgroundColor: "black" }}
+          sx={{ background: "linear-gradient(rgb(26 2 2), rgb(4 2 27))" }}
         >
           <Box
             sx={{
@@ -223,7 +228,7 @@ export default function SignInSide() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2, backgroundColor: "#072c50" }}
+                sx={{ mt: 3, mb: 2, fontWeight: "600", backgroundColor: "#081430", '&:hover': {backgroundColor: "#081430"} }}
               >
                 Sign Up
               </Button>
@@ -234,7 +239,7 @@ export default function SignInSide() {
                     variant="body2"
                     style={{ textDecoration: "none" }}
                   >
-                    <Typography sx={{ color: "#424242" }}>
+                    <Typography sx={{ color: "#686868" }}>
                       Already have an account? Login
                     </Typography>
                   </Link>

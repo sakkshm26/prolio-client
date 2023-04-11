@@ -83,7 +83,7 @@ const Profile = () => {
   }, [changedAccountInfo]);
 
   return (
-    <Box sx={{ padding: { xs: "1px 20px", md: "1px 150px" } }}>
+    <Box sx={{ padding: { xs: "1px 20px", md: "1px 100px", lg: "1px 150px" } }}>
       {profile ? (
         <Box>
           <Navbar
@@ -105,12 +105,16 @@ const Profile = () => {
               display: "flex",
               alignItems: "center",
               flexDirection: { xs: "column-reverse", md: "row" },
-              margin: { xs: 0, md: "40px 0" },
+              margin: { xs: "20px 0 0 0", md: "40px 0" },
             }}
           >
-            <Box sx={{ width: { xs: "100%", sm: "50%" } }}>
+            <Box sx={{ width: { xs: "100%", sm: "70%", md: "50%" } }}>
               <Typography
-                textAlign={profile.profile_image ? "left" : "center"}
+                textAlign={
+                  profile.profile_image
+                    ? { xs: "center", md: "left" }
+                    : "center"
+                }
                 sx={{
                   fontSize: { xs: 28, sm: 35, md: 45 },
                   fontWeight: "500",
@@ -118,11 +122,17 @@ const Profile = () => {
                   marginTop: { xs: 4, md: 0 },
                 }}
               >
-                {profile.display_name || user.profile.name}
+                {profile.display_name ||
+                  profile.username.charAt(0).toUpperCase() +
+                    profile.username.slice(1)}
               </Typography>
               <Box>
                 <Typography
-                  textAlign={profile.profile_image ? "left" : "center"}
+                  textAlign={
+                    profile.profile_image
+                      ? { xs: "center", md: "left" }
+                      : "center"
+                  }
                   sx={{
                     color: "white",
                     fontSize: { xs: 12, sm: 14, md: 16 },
@@ -136,9 +146,14 @@ const Profile = () => {
               <Box
                 marginTop={5}
                 display="flex"
-                sx={{ justifyContent: { xs: "space-around", md: "normal" } }}
+                justifyContent={
+                  profile.profile_image
+                    ? { xs: "space-around", md: "normal" }
+                    : { xs: "space-around", md: "center" }
+                }
+                // sx={{ justifyContent: { xs: "space-around", md: "normal" } }}
               >
-                {profile.email_button_text && (
+                {profile.email_text && (
                   <Button
                     sx={{
                       textTransform: "none",
@@ -146,34 +161,41 @@ const Profile = () => {
                       fontWeight: "200",
                       fontSize: { xs: 13, sm: 15, md: 18 },
                       border: "1px solid #0dffda",
-                      marginRight: { xs: 0, md: 8 },
                       width: {
-                        xs: profile.email_button_text.length * 5 + 50,
-                        md: profile.email_button_text.length * 7 + 50,
+                        xs: profile.email_text.length * 7 + 25,
+                        sm: profile.email_text.length * 9 + 30,
+                        md: profile.email_text.length * 10 + 35,
                       },
                       borderRadius: 2,
                     }}
                     onClick={() =>
-                      (window.location = `mailto:${profile?.display_email}`)
+                      (window.location = `mailto:${profile?.email_id}`)
                     }
                   >
-                    {profile.email_button_text}
+                    {profile.email_text}
                   </Button>
                 )}
-                {profile?.url_button_text && (
+                <Box
+                  marginRight={profile.profile_image ? { xs: 0, md: 8 } : 0}
+                ></Box>
+                {profile?.web_url_text && (
                   <Button
                     sx={{
                       textTransform: "none",
                       color: "white",
                       fontWeight: "200",
-                      fontSize: 18,
+                      fontSize: { xs: 13, sm: 15, md: 18 },
                       border: "1px solid #0dffda",
-                      width: profile.url_button_text.length * 7 + 50,
+                      width: {
+                        xs: profile.web_url_text.length * 7 + 25,
+                        sm: profile.web_url_text.length * 9 + 30,
+                        md: profile.web_url_text.length * 10 + 35,
+                      },
                       borderRadius: 2,
                     }}
-                    onClick={() => window.open(`${profile.display_url}`)}
+                    onClick={() => window.open(`${profile.web_url}`)}
                   >
-                    {profile.url_button_text}
+                    {profile.web_url_text}
                   </Button>
                 )}
               </Box>
@@ -184,13 +206,14 @@ const Profile = () => {
                 sx={{
                   height: { xs: 200, md: 400 },
                   width: { xs: 200, md: 400 },
+                  borderRadius: 3
                 }}
                 src={profile.profile_image}
                 alt="Not found"
               ></Box>
             ) : null}
           </Box>
-          {profile?.twitter_profiles?.length &&
+          {profile?.twitter_profiles?.length ||
           profile?.youtube_profiles?.length ? (
             <Box display="flex" flexDirection="column" alignItems="center">
               <Box
@@ -198,11 +221,11 @@ const Profile = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-around",
-                  margin: { xs: "20px 0 50px 0", md: "70px 0" },
+                  margin: { xs: "50px 0 50px 0", md: "50px 0 70px 0" },
                   width: { xs: "100%", sm: "50%" },
                 }}
               >
-                {profile?.twitter_profiles.length ? (
+                {profile?.twitter_profiles?.length ? (
                   <Box
                     style={{
                       display: "flex",
@@ -228,10 +251,7 @@ const Profile = () => {
                       fontWeight="bold"
                       sx={{ fontSize: { xs: 20, md: 22 } }}
                     >
-                      {
-                        profile.twitter_profiles[0]
-                          .followers_count
-                      }
+                      {profile.twitter_profiles[0].followers_count}
                     </Typography>
                   </Box>
                 ) : null}
@@ -267,10 +287,7 @@ const Profile = () => {
                       fontWeight="bold"
                       sx={{ fontSize: { xs: 20, md: 22 } }}
                     >
-                      {
-                        profile.youtube_profiles[0]
-                          .subscriber_count
-                      }
+                      {profile.youtube_profiles[0].subscriber_count}
                     </Typography>
                   </Box>
                 ) : null}
@@ -295,22 +312,18 @@ const Profile = () => {
         </Box>
       </Box> */}
           {profile?.twitter_profiles?.length && (
-            <TwitterSection
-              data={profile.twitter_profiles[0]}
-            />
+            <TwitterSection data={profile.twitter_profiles[0]} />
           )}
-          {profile?.youtube_profiles.length && (
-            <YoutubeSection
-              data={profile.youtube_profiles[0]}
-            />
+          {profile?.youtube_profiles?.length && (
+            <YoutubeSection data={profile.youtube_profiles[0]} />
           )}
-          {!profile?.twitter_profiles.length &&
-          !profile?.youtube_profiles.length ? (
+          {!profile?.twitter_profiles?.length &&
+          !profile?.youtube_profiles?.length ? (
             <Typography
               sx={{
                 textAlign: "center",
                 fontSize: 20,
-                marginTop: { xs: 0, md: 3 },
+                marginTop: { xs: 3, md: 3 },
               }}
             >
               No social accounts connected{" "}
