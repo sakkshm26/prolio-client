@@ -1,6 +1,10 @@
 # Prolio (https://prolio.xyz)
 
+<br>
+
 A platform for content creators and influencers, enabling social account linking, personalized profile creation, daily social media statistics updates and website generation.
+
+<br>
 
 **Technologies used**: ReactJS, Express.js, PostgreSQL, Prisma, AWS
 
